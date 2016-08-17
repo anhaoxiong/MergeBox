@@ -32,6 +32,30 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - Merge Functions
+- (void) mergeTrackIntoComposition:(AVMutableComposition* ) composition isFirstTrack:(BOOL) isFirstTrack {
+    AVAsset* assetCurrentTrack = self.assetFirstVideo;
+    CMTime atTime = kCMTimeZero;
+    if(!isFirstTrack) {
+        assetCurrentTrack = self.assetSecondVideo;
+        atTime = self.assetFirstVideo.duration;
+    }
+    
+    //get the current track and add its range accordingly
+    AVMutableCompositionTrack *currentTrack = [composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+    [currentTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, assetCurrentTrack.duration) ofTrack:[[assetCurrentTrack tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] atTime:atTime error:nil];
+    
+    //check if video has sound, if yes.. mix it into composition as well
+    if ([[assetCurrentTrack tracksWithMediaType:AVMediaTypeAudio] count] > 0)
+    {
+        AVMutableCompositionTrack *currentTrackAudio = [composition addMutableTrackWithMediaType:AVMediaTypeAudio
+                                                                              preferredTrackID:kCMPersistentTrackID_Invalid];
+        
+        AVAssetTrack *clipAudioTrack = [[assetCurrentTrack tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
+        [currentTrackAudio insertTimeRange:CMTimeRangeMake(kCMTimeZero, assetCurrentTrack.duration) ofTrack:clipAudioTrack atTime:atTime error:nil];
+    }
+}
+
 #pragma mark - Show/Hide Actions
 - (void) showSelectVideoActionSheet {
     UIAlertController* actionSheet = [UIAlertController alertControllerWithTitle:@"Select a Video" message:@"" preferredStyle:UIAlertControllerStyleActionSheet];
@@ -117,7 +141,22 @@
         [UIAlertController showDefaultAlertOnView:self withTitle:@"Select both videos" message:@"Merge can be done only when both videos have been selected"];
     }
     
+    //Create AVMutableComposition Object.This object will hold our multiple AVMutableCompositionTrack.
+    AVMutableComposition* mergedComposition = [[AVMutableComposition alloc] init];
     
+    //get the video tracks
+    [self mergeTrackIntoComposition:mergedComposition isFirstTrack:YES];
+    [self mergeTrackIntoComposition:mergedComposition isFirstTrack:NO];
+    
+    //check for orientation issues
+    
+    //set transform according to orienations
+    
+    //generate main composition
+    
+    //get file path and name
+    
+    //export the video to the file path
 }
 
 - (IBAction)viewMergesClicked:(id)sender {
