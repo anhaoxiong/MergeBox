@@ -6,6 +6,21 @@
 //  Copyright © 2016 Mayur. All rights reserved.
 //
 
+/*
+ TODO LIST
+ 
+ UI Tasks
+ 
+ - Open UIImagePicker with only Record Video Option and option to select existing video
+ 
+ API Tasks
+ 
+ - Add code to Merge two videos into one
+ - Save merged video to selected folder with current time and its name
+ - List out all merged videos in View Merge Controller
+ 
+ */
+
 #import "AppDelegate.h"
 
 @interface AppDelegate ()
