@@ -33,7 +33,7 @@
 }
 
 #pragma mark - Merge Functions
-- (void) mergeTrackIntoComposition:(AVMutableComposition* ) composition isFirstTrack:(BOOL) isFirstTrack {
+- (AVMutableCompositionTrack* ) mergeTrackIntoComposition:(AVMutableComposition* ) composition isFirstTrack:(BOOL) isFirstTrack {
     AVAsset* assetCurrentTrack = self.assetFirstVideo;
     CMTime atTime = kCMTimeZero;
     if(!isFirstTrack) {
@@ -46,14 +46,51 @@
     [currentTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, assetCurrentTrack.duration) ofTrack:[[assetCurrentTrack tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] atTime:atTime error:nil];
     
     //check if video has sound, if yes.. mix it into composition as well
-    if ([[assetCurrentTrack tracksWithMediaType:AVMediaTypeAudio] count] > 0)
-    {
+    if ([[assetCurrentTrack tracksWithMediaType:AVMediaTypeAudio] count] > 0) {
         AVMutableCompositionTrack *currentTrackAudio = [composition addMutableTrackWithMediaType:AVMediaTypeAudio
                                                                               preferredTrackID:kCMPersistentTrackID_Invalid];
         
         AVAssetTrack *clipAudioTrack = [[assetCurrentTrack tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
         [currentTrackAudio insertTimeRange:CMTimeRangeMake(kCMTimeZero, assetCurrentTrack.duration) ofTrack:clipAudioTrack atTime:atTime error:nil];
     }
+    
+    return currentTrack;
+}
+
+- (void)exportDidFinish:(AVAssetExportSession*)session
+{
+    if(session.status == AVAssetExportSessionStatusCompleted){
+        
+        [UIAlertController showDefaultAlertOnView:self withTitle:@"Merge Complete" message:@"View all Merges to check out your new video!"];
+        
+        /*
+        NSURL *outputURL = session.outputURL;
+        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+        if ([library videoAtPathIsCompatibleWithSavedPhotosAlbum:outputURL]) {
+            [library writeVideoAtPathToSavedPhotosAlbum:outputURL
+                                        completionBlock:^(NSURL *assetURL, NSError *error){
+                                            dispatch_async(dispatch_get_main_queue(), ^{
+                                                if (error) {
+                                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Video Saving Failed"  delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil, nil];
+                                                    [alert show];
+                                                }else{
+                                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Video Saved" message:@"Saved To Photo Album"  delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+                                                    [alert show];
+                                                }
+                                                
+                                            });
+                                            
+                                        }];
+        }
+         */
+    }
+    
+    if(session.status == AVAssetExportSessionStatusFailed) {
+        [UIAlertController showDefaultAlertOnView:self withTitle:@"Merge failed!" message:@"MergeBox is sad that it failed you ):"];
+    }
+    
+    self.assetFirstVideo = nil;
+    self.assetSecondVideo = nil;
 }
 
 #pragma mark - Show/Hide Actions
@@ -145,18 +182,72 @@
     AVMutableComposition* mergedComposition = [[AVMutableComposition alloc] init];
     
     //get the video tracks
-    [self mergeTrackIntoComposition:mergedComposition isFirstTrack:YES];
-    [self mergeTrackIntoComposition:mergedComposition isFirstTrack:NO];
+    AVMutableCompositionTrack* firstCompositionTrack = [self mergeTrackIntoComposition:mergedComposition isFirstTrack:YES];
+    AVMutableCompositionTrack* secondCompositionTrack = [self mergeTrackIntoComposition:mergedComposition isFirstTrack:NO];
     
     //check for orientation issues
+    AVAssetTrack *firstAssetTrack = [[self.assetFirstVideo tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+    AVAssetTrack *secondAssetTrack = [[self.assetSecondVideo tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
     
+    CGFloat originalVideoWidth = firstAssetTrack.naturalSize.width;
+    CGFloat originalVideoHeight = firstAssetTrack.naturalSize.height;
+    if(firstAssetTrack.naturalSize.width < secondAssetTrack.naturalSize.width) {
+        originalVideoWidth = secondAssetTrack.naturalSize.width;
+        originalVideoHeight = secondAssetTrack.naturalSize.height;
+    }
+    
+    BOOL firstAssetInPortrait = [self checkForPortrait:firstAssetTrack.preferredTransform];
+    BOOL secondAssetInPortrait = [self checkForPortrait:secondAssetTrack.preferredTransform];
+
     //set transform according to orienations
+    AVMutableVideoCompositionLayerInstruction *firstLayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:firstCompositionTrack];
+    if(firstAssetInPortrait && !secondAssetInPortrait){
+        CGFloat transformRatio = firstAssetTrack.naturalSize.height/firstAssetTrack.naturalSize.width;
+        CGAffineTransform scaleFactor = CGAffineTransformMakeScale(transformRatio,transformRatio);
+        [firstLayerInstruction setTransform:CGAffineTransformConcat(CGAffineTransformConcat(firstAssetTrack.preferredTransform, scaleFactor), CGAffineTransformMakeTranslation((originalVideoWidth - firstAssetTrack.naturalSize.height*transformRatio)/2, 0)) atTime:kCMTimeZero];
+    }else{
+        [firstLayerInstruction setTransform:firstAssetTrack.preferredTransform atTime:kCMTimeZero];
+    }
+    [firstLayerInstruction setOpacity:0.0 atTime:self.assetFirstVideo.duration];
     
+    AVMutableVideoCompositionLayerInstruction *secondLayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:secondCompositionTrack];
+    if(secondAssetInPortrait && !firstAssetInPortrait){
+        CGFloat transformRatio = secondAssetTrack.naturalSize.height/secondAssetTrack.naturalSize.width;
+        CGAffineTransform scaleFactor = CGAffineTransformMakeScale(transformRatio,transformRatio);
+        [secondLayerInstruction setTransform:CGAffineTransformConcat(CGAffineTransformConcat(secondAssetTrack.preferredTransform, scaleFactor), CGAffineTransformMakeTranslation((originalVideoWidth - secondAssetTrack.naturalSize.height*transformRatio)/2, 0)) atTime:self.assetFirstVideo.duration];
+    }else{
+        [secondLayerInstruction setTransform:secondAssetTrack.preferredTransform atTime:self.assetFirstVideo.duration];
+    }
+
     //generate main composition
+    AVMutableVideoCompositionInstruction * mainInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
+    mainInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, CMTimeAdd(self.assetFirstVideo.duration, self.assetSecondVideo.duration));
+    mainInstruction.layerInstructions = [NSArray arrayWithObjects:firstLayerInstruction, secondLayerInstruction, nil];;
     
+    AVMutableVideoComposition *MainCompositionInst = [AVMutableVideoComposition videoComposition];
+    MainCompositionInst.instructions = [NSArray arrayWithObject:mainInstruction];
+    MainCompositionInst.frameDuration = CMTimeMake(1, 30);
+    
+    MainCompositionInst.renderSize = CGSizeMake(originalVideoWidth, originalVideoHeight);
+    if(firstAssetInPortrait && secondAssetInPortrait) {
+        MainCompositionInst.renderSize = CGSizeMake(originalVideoHeight, originalVideoWidth);
+    }
+
     //get file path and name
+    NSURL* fileURL = [self getNewMergeFilePathURL];
     
     //export the video to the file path
+    AVAssetExportSession *exporter = [[AVAssetExportSession alloc] initWithAsset:mergedComposition presetName:AVAssetExportPresetHighestQuality];
+    exporter.outputURL=fileURL;
+    exporter.outputFileType = AVFileTypeQuickTimeMovie;
+    exporter.videoComposition = MainCompositionInst;
+    exporter.shouldOptimizeForNetworkUse = YES;
+    [exporter exportAsynchronouslyWithCompletionHandler:^
+     {
+         dispatch_async(dispatch_get_main_queue(), ^{
+             [self exportDidFinish:exporter];
+         });
+     }];
 }
 
 - (IBAction)viewMergesClicked:(id)sender {

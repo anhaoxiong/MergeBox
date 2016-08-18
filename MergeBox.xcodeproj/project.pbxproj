@@ -9,13 +9,16 @@
 /* Begin PBXBuildFile section */
 		77AC15F61D64349C0043E474 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 77AC15F51D64349C0043E474 /* main.m */; };
 		77AC15F91D64349C0043E474 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 77AC15F81D64349C0043E474 /* AppDelegate.m */; };
-		77AC15FC1D64349C0043E474 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 77AC15FB1D64349C0043E474 /* HomeViewController.m */; };
 		77AC15FF1D64349C0043E474 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 77AC15FD1D64349C0043E474 /* Main.storyboard */; };
 		77AC16011D64349C0043E474 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 77AC16001D64349C0043E474 /* Assets.xcassets */; };
 		77AC16041D64349C0043E474 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 77AC16021D64349C0043E474 /* LaunchScreen.storyboard */; };
 		77AC160C1D646A3F0043E474 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 77AC160B1D646A3F0043E474 /* MobileCoreServices.framework */; };
 		77AC160E1D6475470043E474 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 77AC160D1D6475470043E474 /* AVFoundation.framework */; };
 		77AC16121D6478530043E474 /* UIAlertController+Extra.m in Sources */ = {isa = PBXBuildFile; fileRef = 77AC16111D6478530043E474 /* UIAlertController+Extra.m */; };
+		77C983A81D661F640079E462 /* NSObject+Transform.m in Sources */ = {isa = PBXBuildFile; fileRef = 77C983A71D661F640079E462 /* NSObject+Transform.m */; };
+		77C983AB1D6626710079E462 /* NSObject+ReadWriteFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 77C983AA1D6626710079E462 /* NSObject+ReadWriteFile.m */; };
+		77C983B41D6634630079E462 /* AllMergesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 77C983B11D6634630079E462 /* AllMergesViewController.m */; };
+		77C983B51D6634630079E462 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 77C983B31D6634630079E462 /* HomeViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,8 +26,6 @@
 		77AC15F51D64349C0043E474 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		77AC15F71D64349C0043E474 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		77AC15F81D64349C0043E474 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		77AC15FA1D64349C0043E474 /* HomeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
-		77AC15FB1D64349C0043E474 /* HomeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		77AC15FE1D64349C0043E474 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		77AC16001D64349C0043E474 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		77AC16031D64349C0043E474 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -34,6 +35,14 @@
 		77AC16101D6478530043E474 /* UIAlertController+Extra.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertController+Extra.h"; sourceTree = "<group>"; };
 		77AC16111D6478530043E474 /* UIAlertController+Extra.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertController+Extra.m"; sourceTree = "<group>"; };
 		77AC16131D64786C0043E474 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		77C983A61D661F640079E462 /* NSObject+Transform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+Transform.h"; sourceTree = "<group>"; };
+		77C983A71D661F640079E462 /* NSObject+Transform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+Transform.m"; sourceTree = "<group>"; };
+		77C983A91D6626710079E462 /* NSObject+ReadWriteFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+ReadWriteFile.h"; sourceTree = "<group>"; };
+		77C983AA1D6626710079E462 /* NSObject+ReadWriteFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+ReadWriteFile.m"; sourceTree = "<group>"; };
+		77C983B01D6634630079E462 /* AllMergesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AllMergesViewController.h; sourceTree = "<group>"; };
+		77C983B11D6634630079E462 /* AllMergesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AllMergesViewController.m; sourceTree = "<group>"; };
+		77C983B21D6634630079E462 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
+		77C983B31D6634630079E462 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,13 +82,12 @@
 				77AC16131D64786C0043E474 /* PrefixHeader.pch */,
 				77AC15F71D64349C0043E474 /* AppDelegate.h */,
 				77AC15F81D64349C0043E474 /* AppDelegate.m */,
-				77AC15FA1D64349C0043E474 /* HomeViewController.h */,
-				77AC15FB1D64349C0043E474 /* HomeViewController.m */,
 				77AC15FD1D64349C0043E474 /* Main.storyboard */,
+				77C983AF1D6634630079E462 /* ViewControllers */,
+				77AC160F1D6478530043E474 /* Categories */,
 				77AC16001D64349C0043E474 /* Assets.xcassets */,
 				77AC16021D64349C0043E474 /* LaunchScreen.storyboard */,
 				77AC16051D64349C0043E474 /* Info.plist */,
-				77AC160F1D6478530043E474 /* Categories */,
 				77AC15F41D64349C0043E474 /* Supporting Files */,
 			);
 			path = MergeBox;
@@ -98,8 +106,23 @@
 			children = (
 				77AC16101D6478530043E474 /* UIAlertController+Extra.h */,
 				77AC16111D6478530043E474 /* UIAlertController+Extra.m */,
+				77C983A61D661F640079E462 /* NSObject+Transform.h */,
+				77C983A71D661F640079E462 /* NSObject+Transform.m */,
+				77C983A91D6626710079E462 /* NSObject+ReadWriteFile.h */,
+				77C983AA1D6626710079E462 /* NSObject+ReadWriteFile.m */,
 			);
 			path = Categories;
+			sourceTree = "<group>";
+		};
+		77C983AF1D6634630079E462 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				77C983B01D6634630079E462 /* AllMergesViewController.h */,
+				77C983B11D6634630079E462 /* AllMergesViewController.m */,
+				77C983B21D6634630079E462 /* HomeViewController.h */,
+				77C983B31D6634630079E462 /* HomeViewController.m */,
+			);
+			path = ViewControllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -133,6 +156,7 @@
 				TargetAttributes = {
 					77AC15F01D64349C0043E474 = {
 						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = TDYTX4FFTS;
 					};
 				};
 			};
@@ -172,9 +196,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				77AC15FC1D64349C0043E474 /* HomeViewController.m in Sources */,
+				77C983A81D661F640079E462 /* NSObject+Transform.m in Sources */,
+				77C983B41D6634630079E462 /* AllMergesViewController.m in Sources */,
 				77AC16121D6478530043E474 /* UIAlertController+Extra.m in Sources */,
+				77C983AB1D6626710079E462 /* NSObject+ReadWriteFile.m in Sources */,
 				77AC15F91D64349C0043E474 /* AppDelegate.m in Sources */,
+				77C983B51D6634630079E462 /* HomeViewController.m in Sources */,
 				77AC15F61D64349C0043E474 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -287,11 +314,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PREFIX_HEADER = MergeBox/PrefixHeader.pch;
 				INFOPLIST_FILE = MergeBox/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mayur.apps.MergeBox;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -299,11 +329,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PREFIX_HEADER = MergeBox/PrefixHeader.pch;
 				INFOPLIST_FILE = MergeBox/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mayur.apps.MergeBox;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
