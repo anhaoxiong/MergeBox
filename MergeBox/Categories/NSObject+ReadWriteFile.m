@@ -12,15 +12,13 @@
 
 @implementation NSObject (ReadWriteFile)
 
-//get all the files at the given path
+//get all the files from Documents Directory
 -(NSArray *)fetchMergeFiles {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0];
     
-    int count;
-    
     NSArray *directoryContent = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:documentsDirectory error:NULL];
-    return directoryContent;
+    return [[directoryContent reverseObjectEnumerator] allObjects]; //reversing the array just so that the latest one is always the first one on the list!
 }
 
 

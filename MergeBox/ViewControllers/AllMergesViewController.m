@@ -69,6 +69,8 @@
 - (void) buttonAddToPhotosClicked :(id) sender {
     NSInteger currentVideo = [sender tag];
     
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+
     NSURL *outputURL = [self getMergeFilePathURL:self.arrayAllFiles[currentVideo]];
     __block PHObjectPlaceholder *placeholder;
     
@@ -78,7 +80,8 @@
     } completionHandler:^(BOOL success, NSError *error) {
         if (success) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [UIAlertController showDefaultAlertOnView:self withTitle:@"Merge Complete" message:@"View all Merges to check out your new video!"];
+                [MBProgressHUD hideHUDForView:self.view animated:YES];
+                [UIAlertController showDefaultAlertOnView:self withTitle:@"Added to Camera Roll" message:@"Your video is added to Camera Roll. Open up Photos to view and share the video!"];
             });
         }
         else {

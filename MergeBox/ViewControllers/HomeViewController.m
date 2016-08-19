@@ -67,6 +67,8 @@
 
 - (void)exportDidFinish:(AVAssetExportSession*)session
 {
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
+
     if(session.status == AVAssetExportSessionStatusCompleted){
         [UIAlertController showDefaultAlertOnView:self withTitle:@"Merge Complete" message:@"View all Merges to check out your new video!"];
     }
@@ -174,6 +176,8 @@
         [UIAlertController showDefaultAlertOnView:self withTitle:@"Select both videos" message:@"Merge can be done only when both videos have been selected"];
         return;
     }
+    
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     
     //Create AVMutableComposition Object.This object will hold our multiple AVMutableCompositionTrack.
     AVMutableComposition* mergedComposition = [[AVMutableComposition alloc] init];

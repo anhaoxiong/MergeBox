@@ -10,6 +10,7 @@
 		770709B71D670F43006ED341 /* FileInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 770709B61D670F43006ED341 /* FileInfoCell.m */; };
 		770709BC1D6730B4006ED341 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 770709BB1D6730B4006ED341 /* MediaPlayer.framework */; };
 		770709C01D673314006ED341 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 770709BF1D673314006ED341 /* Photos.framework */; };
+		770709C51D67837E006ED341 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 770709C41D67837E006ED341 /* MBProgressHUD.m */; };
 		77AC15F61D64349C0043E474 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 77AC15F51D64349C0043E474 /* main.m */; };
 		77AC15F91D64349C0043E474 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 77AC15F81D64349C0043E474 /* AppDelegate.m */; };
 		77AC15FF1D64349C0043E474 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 77AC15FD1D64349C0043E474 /* Main.storyboard */; };
@@ -29,6 +30,8 @@
 		770709B61D670F43006ED341 /* FileInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileInfoCell.m; sourceTree = "<group>"; };
 		770709BB1D6730B4006ED341 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		770709BF1D673314006ED341 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
+		770709C31D67837E006ED341 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
+		770709C41D67837E006ED341 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		77AC15F11D64349C0043E474 /* MergeBox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MergeBox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		77AC15F51D64349C0043E474 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		77AC15F71D64349C0043E474 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -76,6 +79,23 @@
 			path = Custom;
 			sourceTree = "<group>";
 		};
+		770709C11D67837E006ED341 /* Vendors */ = {
+			isa = PBXGroup;
+			children = (
+				770709C21D67837E006ED341 /* MBProgressHUD */,
+			);
+			path = Vendors;
+			sourceTree = "<group>";
+		};
+		770709C21D67837E006ED341 /* MBProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				770709C31D67837E006ED341 /* MBProgressHUD.h */,
+				770709C41D67837E006ED341 /* MBProgressHUD.m */,
+			);
+			path = MBProgressHUD;
+			sourceTree = "<group>";
+		};
 		77AC15E81D64349C0043E474 = {
 			isa = PBXGroup;
 			children = (
@@ -103,6 +123,7 @@
 				77AC15F71D64349C0043E474 /* AppDelegate.h */,
 				77AC15F81D64349C0043E474 /* AppDelegate.m */,
 				77AC15FD1D64349C0043E474 /* Main.storyboard */,
+				770709C11D67837E006ED341 /* Vendors */,
 				77C983AF1D6634630079E462 /* ViewControllers */,
 				77AC160F1D6478530043E474 /* Categories */,
 				770709B41D670F43006ED341 /* Custom */,
@@ -221,6 +242,7 @@
 				77C983B41D6634630079E462 /* AllMergesViewController.m in Sources */,
 				77AC16121D6478530043E474 /* UIAlertController+Extra.m in Sources */,
 				77C983AB1D6626710079E462 /* NSObject+ReadWriteFile.m in Sources */,
+				770709C51D67837E006ED341 /* MBProgressHUD.m in Sources */,
 				77AC15F91D64349C0043E474 /* AppDelegate.m in Sources */,
 				770709B71D670F43006ED341 /* FileInfoCell.m in Sources */,
 				77C983B51D6634630079E462 /* HomeViewController.m in Sources */,
