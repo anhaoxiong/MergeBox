@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		770709B71D670F43006ED341 /* FileInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 770709B61D670F43006ED341 /* FileInfoCell.m */; };
+		770709BC1D6730B4006ED341 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 770709BB1D6730B4006ED341 /* MediaPlayer.framework */; };
+		770709C01D673314006ED341 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 770709BF1D673314006ED341 /* Photos.framework */; };
 		77AC15F61D64349C0043E474 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 77AC15F51D64349C0043E474 /* main.m */; };
 		77AC15F91D64349C0043E474 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 77AC15F81D64349C0043E474 /* AppDelegate.m */; };
 		77AC15FF1D64349C0043E474 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 77AC15FD1D64349C0043E474 /* Main.storyboard */; };
@@ -22,6 +25,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		770709B51D670F43006ED341 /* FileInfoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileInfoCell.h; sourceTree = "<group>"; };
+		770709B61D670F43006ED341 /* FileInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileInfoCell.m; sourceTree = "<group>"; };
+		770709BB1D6730B4006ED341 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		770709BF1D673314006ED341 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		77AC15F11D64349C0043E474 /* MergeBox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MergeBox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		77AC15F51D64349C0043E474 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		77AC15F71D64349C0043E474 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -50,6 +57,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				770709C01D673314006ED341 /* Photos.framework in Frameworks */,
+				770709BC1D6730B4006ED341 /* MediaPlayer.framework in Frameworks */,
 				77AC160E1D6475470043E474 /* AVFoundation.framework in Frameworks */,
 				77AC160C1D646A3F0043E474 /* MobileCoreServices.framework in Frameworks */,
 			);
@@ -58,9 +67,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		770709B41D670F43006ED341 /* Custom */ = {
+			isa = PBXGroup;
+			children = (
+				770709B51D670F43006ED341 /* FileInfoCell.h */,
+				770709B61D670F43006ED341 /* FileInfoCell.m */,
+			);
+			path = Custom;
+			sourceTree = "<group>";
+		};
 		77AC15E81D64349C0043E474 = {
 			isa = PBXGroup;
 			children = (
+				770709BF1D673314006ED341 /* Photos.framework */,
+				770709BB1D6730B4006ED341 /* MediaPlayer.framework */,
 				77AC160D1D6475470043E474 /* AVFoundation.framework */,
 				77AC160B1D646A3F0043E474 /* MobileCoreServices.framework */,
 				77AC15F31D64349C0043E474 /* MergeBox */,
@@ -85,6 +105,7 @@
 				77AC15FD1D64349C0043E474 /* Main.storyboard */,
 				77C983AF1D6634630079E462 /* ViewControllers */,
 				77AC160F1D6478530043E474 /* Categories */,
+				770709B41D670F43006ED341 /* Custom */,
 				77AC16001D64349C0043E474 /* Assets.xcassets */,
 				77AC16021D64349C0043E474 /* LaunchScreen.storyboard */,
 				77AC16051D64349C0043E474 /* Info.plist */,
@@ -117,10 +138,10 @@
 		77C983AF1D6634630079E462 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				77C983B01D6634630079E462 /* AllMergesViewController.h */,
-				77C983B11D6634630079E462 /* AllMergesViewController.m */,
 				77C983B21D6634630079E462 /* HomeViewController.h */,
 				77C983B31D6634630079E462 /* HomeViewController.m */,
+				77C983B01D6634630079E462 /* AllMergesViewController.h */,
+				77C983B11D6634630079E462 /* AllMergesViewController.m */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -201,6 +222,7 @@
 				77AC16121D6478530043E474 /* UIAlertController+Extra.m in Sources */,
 				77C983AB1D6626710079E462 /* NSObject+ReadWriteFile.m in Sources */,
 				77AC15F91D64349C0043E474 /* AppDelegate.m in Sources */,
+				770709B71D670F43006ED341 /* FileInfoCell.m in Sources */,
 				77C983B51D6634630079E462 /* HomeViewController.m in Sources */,
 				77AC15F61D64349C0043E474 /* main.m in Sources */,
 			);

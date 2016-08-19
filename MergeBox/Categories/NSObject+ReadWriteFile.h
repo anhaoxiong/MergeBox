@@ -10,6 +10,7 @@
 
 @interface NSObject (ReadWriteFile)
 
--(NSArray *)listFileAtPath:(NSString *)path;
+-(NSArray *)fetchMergeFiles;
 - (NSURL* ) getNewMergeFilePathURL;
+- (NSURL*) getMergeFilePathURL : (NSString* ) fileName;
 @end

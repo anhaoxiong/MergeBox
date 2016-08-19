@@ -9,6 +9,7 @@
 #import "HomeViewController.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import <AVFoundation/AVFoundation.h>
+#import "AllMergesViewController.h"
 
 @interface HomeViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
@@ -17,6 +18,7 @@
 @property(nonatomic, strong) AVAsset* assetFirstVideo;
 @property(nonatomic, strong) AVAsset* assetSecondVideo;
 
+@property(nonatomic, strong) UIAlertController* actionSheet;
 @end
 
 @implementation HomeViewController
@@ -25,6 +27,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    self.navigationController.navigationBarHidden = YES;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -60,29 +68,7 @@
 - (void)exportDidFinish:(AVAssetExportSession*)session
 {
     if(session.status == AVAssetExportSessionStatusCompleted){
-        
         [UIAlertController showDefaultAlertOnView:self withTitle:@"Merge Complete" message:@"View all Merges to check out your new video!"];
-        
-        /*
-        NSURL *outputURL = session.outputURL;
-        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-        if ([library videoAtPathIsCompatibleWithSavedPhotosAlbum:outputURL]) {
-            [library writeVideoAtPathToSavedPhotosAlbum:outputURL
-                                        completionBlock:^(NSURL *assetURL, NSError *error){
-                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                                if (error) {
-                                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Video Saving Failed"  delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil, nil];
-                                                    [alert show];
-                                                }else{
-                                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Video Saved" message:@"Saved To Photo Album"  delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
-                                                    [alert show];
-                                                }
-                                                
-                                            });
-                                            
-                                        }];
-        }
-         */
     }
     
     if(session.status == AVAssetExportSessionStatusFailed) {
@@ -95,27 +81,36 @@
 
 #pragma mark - Show/Hide Actions
 - (void) showSelectVideoActionSheet {
-    UIAlertController* actionSheet = [UIAlertController alertControllerWithTitle:@"Select a Video" message:@"" preferredStyle:UIAlertControllerStyleActionSheet];
+    self.actionSheet = [UIAlertController alertControllerWithTitle:@"Select a Video" message:@"" preferredStyle:UIAlertControllerStyleActionSheet];
     
     //add take photo button
     UIAlertAction* takePhoto = [UIAlertAction actionWithTitle:@"Take a new video" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self.actionSheet dismissViewControllerAnimated:YES completion:nil];
         [self showCamera];
+        /*[actionSheet dismissViewControllerAnimated:YES completion:^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+            [self performSelector:@selector(showCamera) withObject:nil afterDelay:2];
+            });
+        }];*/
     }];
-    [actionSheet addAction:takePhoto];
+    [self.actionSheet addAction:takePhoto];
     
     //add choose photo button
     UIAlertAction* choosePhoto = [UIAlertAction actionWithTitle:@"Choose an existing video" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self chooseVideoFromLibrary];
+        [self.actionSheet dismissViewControllerAnimated:YES completion:^{
+        }];
+        
     }];
-    [actionSheet addAction:choosePhoto];
+    [self.actionSheet addAction:choosePhoto];
     
     //add cancel button
     UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        [actionSheet dismissViewControllerAnimated:YES completion:nil];
+        [self.actionSheet dismissViewControllerAnimated:YES completion:nil];
     }];
-    [actionSheet addAction:cancel];
+    [self.actionSheet addAction:cancel];
 
-    [self presentViewController:actionSheet animated:YES completion:nil];
+    [self presentViewController:self.actionSheet animated:YES completion:nil];
 }
 
 - (void) showCamera {
@@ -147,17 +142,18 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
     [picker dismissViewControllerAnimated:YES completion:^{
-        
-        NSString *currentMediaType = [info objectForKey: UIImagePickerControllerMediaType];
-        if (CFStringCompare ((__bridge_retained CFStringRef) currentMediaType, kUTTypeMovie, 0)
-            == kCFCompareEqualTo) {
-            if(self.selectingFirstVideo) {
-                self.assetFirstVideo = [AVAsset assetWithURL:[info objectForKey:UIImagePickerControllerMediaURL]];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSString *currentMediaType = [info objectForKey: UIImagePickerControllerMediaType];
+            if (CFStringCompare ((__bridge_retained CFStringRef) currentMediaType, kUTTypeMovie, 0)
+                == kCFCompareEqualTo) {
+                if(self.selectingFirstVideo) {
+                    self.assetFirstVideo = [AVAsset assetWithURL:[info objectForKey:UIImagePickerControllerMediaURL]];
+                }
+                else {
+                    self.assetSecondVideo = [AVAsset assetWithURL:[info objectForKey:UIImagePickerControllerMediaURL]];
+                }
             }
-            else {
-                self.assetSecondVideo = [AVAsset assetWithURL:[info objectForKey:UIImagePickerControllerMediaURL]];
-            }
-        }
+        });
     }];
 }
 
@@ -176,6 +172,7 @@
     //check if both the videos are already selected
     if(!self.assetFirstVideo || !self.assetSecondVideo) {
         [UIAlertController showDefaultAlertOnView:self withTitle:@"Select both videos" message:@"Merge can be done only when both videos have been selected"];
+        return;
     }
     
     //Create AVMutableComposition Object.This object will hold our multiple AVMutableCompositionTrack.
@@ -251,7 +248,8 @@
 }
 
 - (IBAction)viewMergesClicked:(id)sender {
-    
+    AllMergesViewController* mergesViewController = [MAIN_STORYBOARD instantiateViewControllerWithIdentifier:@"AllMergesViewController"];
+    [self.navigationController pushViewController:mergesViewController animated:YES];
 }
 
 @end

@@ -13,18 +13,13 @@
 @implementation NSObject (ReadWriteFile)
 
 //get all the files at the given path
--(NSArray *)listFileAtPath:(NSString *)path
-{
-    //-----> LIST ALL FILES <-----//
-    NSLog(@"LISTING ALL FILES FOUND");
+-(NSArray *)fetchMergeFiles {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
     
     int count;
     
-    NSArray *directoryContent = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:NULL];
-    for (count = 0; count < (int)[directoryContent count]; count++)
-    {
-        NSLog(@"File %d: %@", (count + 1), [directoryContent objectAtIndex:count]);
-    }
+    NSArray *directoryContent = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:documentsDirectory error:NULL];
     return directoryContent;
 }
 
@@ -34,6 +29,16 @@
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0];
     NSString *myPathDocs =  [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"merge%@.mov", [self getNewMergeFileName]]];
+    
+    NSURL *url = [NSURL fileURLWithPath:myPathDocs];
+    
+    return url;
+}
+
+- (NSURL*) getMergeFilePathURL : (NSString* ) fileName {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *myPathDocs =  [documentsDirectory stringByAppendingPathComponent:fileName];
     
     NSURL *url = [NSURL fileURLWithPath:myPathDocs];
     
