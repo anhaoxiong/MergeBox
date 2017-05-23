@@ -11,6 +11,21 @@
 #import <AVFoundation/AVFoundation.h>
 #import "AllMergesViewController.h"
 
+@interface VideoInfo : NSObject
+
+@property (strong, nonatomic) NSURL *url;
+@property (assign, nonatomic) BOOL isPortrait;
+@property (assign, nonatomic) CGSize naturalSize;
+@property (assign, nonatomic) CGSize videoSize;
+
+@end
+
+@implementation VideoInfo
+
+@end
+
+
+
 @interface HomeViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property(nonatomic, readwrite) BOOL selectingFirstVideo;
@@ -56,7 +71,7 @@
     //check if video has sound, if yes.. mix it into composition as well
     if ([[assetCurrentTrack tracksWithMediaType:AVMediaTypeAudio] count] > 0) {
         AVMutableCompositionTrack *currentTrackAudio = [composition addMutableTrackWithMediaType:AVMediaTypeAudio
-                                                                              preferredTrackID:kCMPersistentTrackID_Invalid];
+                                                                                preferredTrackID:kCMPersistentTrackID_Invalid];
         
         AVAssetTrack *clipAudioTrack = [[assetCurrentTrack tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
         [currentTrackAudio insertTimeRange:CMTimeRangeMake(kCMTimeZero, assetCurrentTrack.duration) ofTrack:clipAudioTrack atTime:atTime error:nil];
@@ -68,7 +83,7 @@
 - (void)exportDidFinish:(AVAssetExportSession*)session
 {
     [MBProgressHUD hideHUDForView:self.view animated:YES];
-
+    
     if(session.status == AVAssetExportSessionStatusCompleted){
         [UIAlertController showDefaultAlertOnView:self withTitle:@"Merge Complete" message:@"View all Merges to check out your new video!"];
     }
@@ -90,10 +105,10 @@
         [self.actionSheet dismissViewControllerAnimated:YES completion:nil];
         [self showCamera];
         /*[actionSheet dismissViewControllerAnimated:YES completion:^{
-            dispatch_async(dispatch_get_main_queue(), ^{
-            [self performSelector:@selector(showCamera) withObject:nil afterDelay:2];
-            });
-        }];*/
+         dispatch_async(dispatch_get_main_queue(), ^{
+         [self performSelector:@selector(showCamera) withObject:nil afterDelay:2];
+         });
+         }];*/
     }];
     [self.actionSheet addAction:takePhoto];
     
@@ -111,7 +126,7 @@
         [self.actionSheet dismissViewControllerAnimated:YES completion:nil];
     }];
     [self.actionSheet addAction:cancel];
-
+    
     [self presentViewController:self.actionSheet animated:YES completion:nil];
 }
 
@@ -170,6 +185,31 @@
     [self showSelectVideoActionSheet];
 }
 
+- (void)getVideoInfo:(VideoInfo *)videoInfo asset:(AVAsset *)asset {
+    AVAssetTrack *assetTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+    
+    CGFloat originalVideoWidth = assetTrack.naturalSize.width;
+    CGFloat originalVideoHeight = assetTrack.naturalSize.height;
+    BOOL assetIsPortrait = [self checkForPortrait:assetTrack.preferredTransform];
+    
+    if (assetIsPortrait) {
+        if (assetTrack.naturalSize.width > assetTrack.naturalSize.height) {
+            originalVideoWidth = assetTrack.naturalSize.height;
+            originalVideoHeight = assetTrack.naturalSize.width;
+        } else {
+            originalVideoWidth = assetTrack.naturalSize.width;
+            originalVideoHeight = assetTrack.naturalSize.height;
+        }
+    } else {
+        originalVideoWidth = assetTrack.naturalSize.width;
+        originalVideoHeight = assetTrack.naturalSize.height;
+    }
+    
+    videoInfo.isPortrait = assetIsPortrait;
+    videoInfo.naturalSize = assetTrack.naturalSize;
+    videoInfo.videoSize = CGSizeMake(originalVideoWidth, originalVideoHeight);
+}
+
 - (IBAction)createMergeClicked:(id)sender {
     //check if both the videos are already selected
     if(!self.assetFirstVideo || !self.assetSecondVideo) {
@@ -190,36 +230,72 @@
     AVAssetTrack *firstAssetTrack = [[self.assetFirstVideo tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
     AVAssetTrack *secondAssetTrack = [[self.assetSecondVideo tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
     
-    CGFloat originalVideoWidth = firstAssetTrack.naturalSize.width;
-    CGFloat originalVideoHeight = firstAssetTrack.naturalSize.height;
-    if(firstAssetTrack.naturalSize.width < secondAssetTrack.naturalSize.width) {
-        originalVideoWidth = secondAssetTrack.naturalSize.width;
-        originalVideoHeight = secondAssetTrack.naturalSize.height;
+    VideoInfo *firstInfo = [[VideoInfo alloc] init];
+    VideoInfo *secondInfo = [[VideoInfo alloc] init];
+    
+    [self getVideoInfo:firstInfo asset:self.assetFirstVideo];
+    [self getVideoInfo:secondInfo asset:self.assetSecondVideo];
+    
+    CGFloat originalVideoWidth = firstInfo.naturalSize.width;
+    CGFloat originalVideoHeight = firstInfo.naturalSize.height;
+    if (firstInfo.isPortrait) {
+        if (!CGSizeEqualToSize(firstInfo.naturalSize, firstInfo.videoSize)) {
+            originalVideoWidth = firstInfo.videoSize.width;
+            originalVideoHeight = firstInfo.videoSize.height;
+        } else {
+            originalVideoWidth = firstInfo.naturalSize.width;
+            originalVideoHeight = firstInfo.naturalSize.height;
+        }
+    } else {
+        if (!CGSizeEqualToSize(firstInfo.naturalSize, firstInfo.videoSize)) {
+            originalVideoWidth = firstInfo.videoSize.width;
+            originalVideoHeight = firstInfo.videoSize.height;
+        } else {
+            originalVideoWidth = firstInfo.naturalSize.width;
+            originalVideoHeight = firstInfo.naturalSize.height;
+        }
     }
     
-    BOOL firstAssetInPortrait = [self checkForPortrait:firstAssetTrack.preferredTransform];
-    BOOL secondAssetInPortrait = [self checkForPortrait:secondAssetTrack.preferredTransform];
-
+    BOOL firstAssetInPortrait = firstInfo.isPortrait;
+    BOOL secondAssetInPortrait = secondInfo.isPortrait;
+    
     //set transform according to orienations
     AVMutableVideoCompositionLayerInstruction *firstLayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:firstCompositionTrack];
-    if(firstAssetInPortrait && !secondAssetInPortrait){
-        CGFloat transformRatio = firstAssetTrack.naturalSize.height/firstAssetTrack.naturalSize.width;
-        CGAffineTransform scaleFactor = CGAffineTransformMakeScale(transformRatio,transformRatio);
-        [firstLayerInstruction setTransform:CGAffineTransformConcat(CGAffineTransformConcat(firstAssetTrack.preferredTransform, scaleFactor), CGAffineTransformMakeTranslation((originalVideoWidth - firstAssetTrack.naturalSize.height*transformRatio)/2, 0)) atTime:kCMTimeZero];
-    }else{
-        [firstLayerInstruction setTransform:firstAssetTrack.preferredTransform atTime:kCMTimeZero];
+    if (firstInfo.isPortrait) {
+        if (!CGSizeEqualToSize(firstInfo.naturalSize, firstInfo.videoSize)) {
+            [firstLayerInstruction setTransform:firstAssetTrack.preferredTransform atTime:kCMTimeZero];
+        } else {
+            [firstLayerInstruction setTransform:firstAssetTrack.preferredTransform atTime:kCMTimeZero];
+        }
+    } else {
+        if (!CGSizeEqualToSize(firstInfo.naturalSize, firstInfo.videoSize)) {
+            [firstLayerInstruction setTransform:firstAssetTrack.preferredTransform atTime:kCMTimeZero];
+        } else {
+            [firstLayerInstruction setTransform:firstAssetTrack.preferredTransform atTime:kCMTimeZero];
+        }
     }
     [firstLayerInstruction setOpacity:0.0 atTime:self.assetFirstVideo.duration];
     
     AVMutableVideoCompositionLayerInstruction *secondLayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:secondCompositionTrack];
-    if(secondAssetInPortrait && !firstAssetInPortrait){
-        CGFloat transformRatio = secondAssetTrack.naturalSize.height/secondAssetTrack.naturalSize.width;
-        CGAffineTransform scaleFactor = CGAffineTransformMakeScale(transformRatio,transformRatio);
-        [secondLayerInstruction setTransform:CGAffineTransformConcat(CGAffineTransformConcat(secondAssetTrack.preferredTransform, scaleFactor), CGAffineTransformMakeTranslation((originalVideoWidth - secondAssetTrack.naturalSize.height*transformRatio)/2, 0)) atTime:self.assetFirstVideo.duration];
-    }else{
-        [secondLayerInstruction setTransform:secondAssetTrack.preferredTransform atTime:self.assetFirstVideo.duration];
+    if (firstAssetInPortrait) {
+        if(secondAssetInPortrait){
+            [secondLayerInstruction setTransform:secondAssetTrack.preferredTransform atTime:self.assetFirstVideo.duration];
+        }else{
+            CGFloat transformRatio = originalVideoWidth / originalVideoHeight;
+            CGAffineTransform scaleFactor = CGAffineTransformMakeScale(transformRatio,transformRatio);
+            [secondLayerInstruction setTransform:CGAffineTransformConcat(CGAffineTransformConcat(secondAssetTrack.preferredTransform, scaleFactor), CGAffineTransformMakeTranslation(0, (originalVideoHeight - originalVideoWidth*transformRatio)/2)) atTime:self.assetFirstVideo.duration];
+        }
+        
+    } else {
+        if(secondAssetInPortrait){
+            CGFloat transformRatio = secondAssetTrack.naturalSize.height/secondAssetTrack.naturalSize.width;
+            CGAffineTransform scaleFactor = CGAffineTransformMakeScale(transformRatio,transformRatio);
+            [secondLayerInstruction setTransform:CGAffineTransformConcat(CGAffineTransformConcat(secondAssetTrack.preferredTransform, scaleFactor), CGAffineTransformMakeTranslation((originalVideoWidth - secondAssetTrack.naturalSize.height*transformRatio)/2, 0)) atTime:self.assetFirstVideo.duration];
+        } else{
+            [secondLayerInstruction setTransform:secondAssetTrack.preferredTransform atTime:self.assetFirstVideo.duration];
+        }
     }
-
+    
     //generate main composition
     AVMutableVideoCompositionInstruction * mainInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
     mainInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, CMTimeAdd(self.assetFirstVideo.duration, self.assetSecondVideo.duration));
@@ -230,10 +306,7 @@
     MainCompositionInst.frameDuration = CMTimeMake(1, 30);
     
     MainCompositionInst.renderSize = CGSizeMake(originalVideoWidth, originalVideoHeight);
-    if(firstAssetInPortrait && secondAssetInPortrait) {
-        MainCompositionInst.renderSize = CGSizeMake(originalVideoHeight, originalVideoWidth);
-    }
-
+    
     //get file path and name
     NSURL* fileURL = [self getNewMergeFilePathURL];
     
